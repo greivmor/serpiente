@@ -18,7 +18,7 @@ def start_game():
         print(f"Por favor, ingrese un número de obstáculos no mayor a {max_obstaculos}.")
         return
     
-    matriz = [['*' for _ in range(n)] for _ in range(n)]
+    matriz = [['.' for _ in range(n)] for _ in range(n)]
 
     for _ in range(num_obstaculos):
         while True:
@@ -41,8 +41,8 @@ def start_game():
             fila = random.randint(0, n - 1)
             columna = random.randint(0, n - 1)
             
-            if matriz[fila][columna] == '*':
-                matriz[fila][columna] = 'm'
+            if matriz[fila][columna] == '.':
+                matriz[fila][columna] = 'A'
                 break
 
     for fila in matriz:
