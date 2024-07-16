@@ -32,11 +32,7 @@ def start_game():
                 matriz[fila + 1][columna] = 'o'
                 matriz[fila + 1][columna + 1] = 'o'
                 break
-    
-    max_manzanas = (n * n) // 4
-    num_manzanas = random.randint(1, max_manzanas)
 
-    for _ in range(num_manzanas):
         while True:
             fila = random.randint(0, n - 1)
             columna = random.randint(0, n - 1)
