@@ -25,8 +25,8 @@ def start_game():
             fila = random.randint(0, n - 2)
             columna = random.randint(0, n - 2)
             
-            if matriz[fila][columna] == '*' and matriz[fila][columna + 1] == '*' and \
-               matriz[fila + 1][columna] == '*' and matriz[fila + 1][columna + 1] == '*':
+            if matriz[fila][columna] == '.' and matriz[fila][columna + 1] == '.' and \
+               matriz[fila + 1][columna] == '.' and matriz[fila + 1][columna + 1] == '.':
                 matriz[fila][columna] = 'o'
                 matriz[fila][columna + 1] = 'o'
                 matriz[fila + 1][columna] = 'o'
