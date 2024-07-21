@@ -2,7 +2,6 @@
 # i. Crear la matriz de 𝑛×𝑛, donde n>4.
 # ii. Generar obstáculos de 2x2 en posiciones aleatorias.
 # iii. Colocar una manzana en una posición aleatoria de la matriz.
-
 import random
 
 def start_game():
@@ -21,9 +20,9 @@ def start_game():
     matriz = [['.' for _ in range(n)] for _ in range(n)]
     
     def centro(n):
-      centro_fila = n // 2
-      centro_columna = n // 2
-      return centro_fila, centro_columna
+        centro_fila = n // 2
+        centro_columna = n // 2
+        return centro_fila, centro_columna
 
     for _ in range(num_obstaculos):
         while True:
@@ -37,78 +36,50 @@ def start_game():
                 matriz[fila + 1][columna] = 'o'
                 matriz[fila + 1][columna + 1] = 'o'
                 break
-    
- 
-        while True:
-            fila = random.randint(0, n - 1)
-            columna = random.randint(0, n - 1)
-            
-            if matriz[fila][columna] == '.':
-                matriz[fila][columna] = 'A'
-                break
-    
+
+    # Apple no Overlaps
+    while True:
+        fila = random.randint(0, n - 1)
+        columna = random.randint(0, n - 1)
+        
+        if matriz[fila][columna] == '.':
+            matriz[fila][columna] = 'A'
+            break
+
+    # Snake no overlaps
     centro_fila, centro_columna = centro(n)
-    matriz[centro_fila][centro_columna] = 'H'
-    matriz[centro_fila][centro_columna - 1] = 'S'
-    matriz[centro_fila][centro_columna - 2] = 'S'
+    snake = [(centro_fila, centro_columna + 2), (centro_fila, centro_columna + 1), (centro_fila, centro_columna)]
+    for fila, columna in snake:
+        matriz[fila][columna] = 'S'
+    matriz[snake[0][0]][snake[0][1]] = 'H'
 
-    def mover_serpiente(matriz, direccion):
-        centro_fila, centro_columna = centro(n)
-        head_fila = centro_fila
-        head_columna = centro_columna + 2
-     
-        tail_fila = centro_fila
-        tail_columna = centro_columna - 2
+    def mover_serpiente(matriz, snake, direccion):
+        head_fila, head_columna = snake[0]
+        new_head = None
 
+        if direccion == 'arriba' and head_fila > 0:
+            new_head = (head_fila - 1, head_columna)
+        elif direccion == 'abajo' and head_fila < len(matriz) - 1:
+            new_head = (head_fila + 1, head_columna)
+        elif direccion == 'izquierda' and head_columna > 0:
+            new_head = (head_fila, head_columna - 1)
+        elif direccion == 'derecha' and head_columna < len(matriz) - 1:
+            new_head = (head_fila, head_columna + 1)
+        
+        if new_head and matriz[new_head[0]][new_head[1]] == '.':
+            snake.insert(0, new_head)
+            tail = snake.pop()
+            matriz[head_fila][head_columna] = 'S'
+            matriz[new_head[0]][new_head[1]] = 'H'
+            matriz[tail[0]][tail[1]] = '.'
+        return matriz, snake
     
-        for i in range(2, -1, -1):
-            if direccion == 'arriba':
-                if centro_fila - i > 0 and matriz[centro_fila - i][centro_columna] == '.':
-                    matriz[centro_fila - i][centro_columna] = 'S'
-                    if i == 2:
-                        matriz[tail_fila][tail_columna] = '.'
-            elif direccion == 'abajo':
-                if centro_fila + i < n - 1 and matriz[centro_fila + i][centro_columna] == '.':
-                    matriz[centro_fila + i][centro_columna] = 'S'
-                if i == 2:
-                    matriz[tail_fila][tail_columna] = '.'
-            elif direccion == 'izquierda':
-                if centro_columna - i > 0 and matriz[centro_fila][centro_columna - i] == '.':
-                    matriz[centro_fila][centro_columna - i] = 'S'
-                if i == 2:
-                    matriz[tail_fila][tail_columna] = '.'
-            elif direccion == 'derecha':
-                if centro_columna + i < n - 1 and matriz[centro_fila][centro_columna + i] == '.':
-                    matriz[centro_fila][centro_columna + i] = 'S'
-                if i == 2:
-                    matriz[tail_fila][tail_columna] = '.'
-
-    
-        if direccion == 'arriba':
-            if centro_fila > 0 and matriz[centro_fila - 1][centro_columna] == '.':
-                matriz[centro_fila - 1][centro_columna] = 'H'
-            matriz[centro_fila][centro_columna] = 'S'
-        elif direccion == 'abajo':
-            if centro_fila < n - 1 and matriz[centro_fila + 1][centro_columna] == '.':
-                matriz[centro_fila + 1][centro_columna] = 'H'
-            matriz[centro_fila][centro_columna] = 'S'
-        elif direccion == 'izquierda':
-            if centro_columna > 0 and matriz[centro_fila][centro_columna - 1] == '.':
-                matriz[centro_fila][centro_columna - 1] = 'H'
-            matriz[centro_fila][centro_columna] = 'S'
-        elif direccion == 'derecha':
-            if centro_columna < n - 1 and matriz[centro_fila][centro_columna + 1] == '.':
-                matriz[centro_fila][centro_columna + 1] = 'H'
-            matriz[centro_fila][centro_columna] = 'S'
-
-        return matriz
-
     while True:
         for fila in matriz:
             print(" ".join(fila))
         direccion = input('\nIngrese el movimiento que desea indicarle a la serpiente (arriba, abajo, izquierda, derecha)... ')
        
-        matriz = mover_serpiente(matriz,direccion)
+        matriz, snake = mover_serpiente(matriz, snake, direccion)
     
         for fila in matriz:
             print(' '.join(fila))
@@ -122,5 +93,5 @@ def start_game():
                 return
             else:
                 print("Por favor, ingrese 's' para continuar o 'n' para salir.")
-            
+                
 start_game()
