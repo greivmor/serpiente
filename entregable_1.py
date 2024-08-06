@@ -2,7 +2,15 @@
 # i. Crear la matriz de 𝑛×𝑛, donde n>4.
 # ii. Generar obstáculos de 2x2 en posiciones aleatorias.
 # iii. Colocar una manzana en una posición aleatoria de la matriz.
+import os
 import random
+
+def clear_terminal():
+    """Limpia la terminal según el sistema operativo."""
+    if os.name == 'nt':
+        os.system('cls')
+    else:
+        os.system('clear')
 
 def start_game():
     """Starts the snake game."""
@@ -28,10 +36,10 @@ def start_game():
 
     # Bucle principal del juego
     while True:
+        clear_terminal()
         mostrar_matriz(matriz)
         direccion = obtener_direccion()
         matriz, snake = mover_serpiente(matriz, snake, direccion)
-        mostrar_matriz(matriz)
 
 def crear_matriz(n):
     """Crea una matriz de n x n con puntos."""
