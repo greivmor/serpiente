@@ -1,40 +1,44 @@
-# b. Objetivos:
-# i. Crear la matriz de 𝑛×𝑛, donde n>4.
-# ii. Generar obstáculos de 2x2 en posiciones aleatorias.
-# iii. Colocar una manzana en una posición aleatoria de la matriz.
 import os
 import random
 
 def clear_terminal():
-    """Limpia la terminal según el sistema operativo."""
+ 
     if os.name == 'nt':
         os.system('cls')
-    else:
-        os.system('clear')
+    
 
 def start_game():
-    """Starts the snake game."""
-    n = int(input("\nIngrese un número mayor a 4 para el tamaño de la matriz: "))
-    if n <= 4:
-        print("\nPor favor, ingrese un número mayor a 4")
-        return
+    
+    while True:
+        try:
+            n = int(input("\nIngrese un número mayor a 4 para el tamaño de la matriz: "))
+            if n <= 4:
+                print("\nPor favor, ingrese un número mayor a 4")
+                continue
+            break
+        except ValueError:
+            print("\nPor favor, ingrese un número entero válido.")
 
     max_obstaculos = (n // 2) * (n // 2)
-    num_obstaculos = int(input(f"Ingrese el número de obstáculos (máximo {max_obstaculos}): "))
-
-    if num_obstaculos > max_obstaculos:
-        print(f"\nPor favor, ingrese un número de obstáculos no mayor a {max_obstaculos}.")
-        return
+    while True:
+        try:
+            num_obstaculos = int(input(f"Ingrese el número de obstáculos (máximo {max_obstaculos}): "))
+            if num_obstaculos > max_obstaculos:
+                print(f"\nPor favor, ingrese un número de obstáculos no mayor a {max_obstaculos}.")
+                continue 
+            break 
+        except ValueError:
+            print("\nPor favor, ingrese un número entero válido.")
 
     matriz = crear_matriz(n)
-    # Generar obstáculos
+    
     generar_obstaculos(matriz, num_obstaculos)
-    # Colocar la manzana
+   
     colocar_manzana(matriz)
-    # Inicializar la serpiente
+    
     snake = inicializar_serpiente(matriz, n)
 
-    # Bucle principal del juego
+    
     while True:
         clear_terminal()
         mostrar_matriz(matriz)
@@ -42,17 +46,17 @@ def start_game():
         matriz, snake = mover_serpiente(matriz, snake, direccion)
 
 def crear_matriz(n):
-    """Crea una matriz de n x n con puntos."""
+    
     return [['.' for _ in range(n)] for _ in range(n)]
 
 def centro(n):
-    """Calcula las coordenadas del centro de la matriz."""
+    
     centro_fila = n // 2
     centro_columna = n // 2
     return centro_fila, centro_columna
 
 def generar_obstaculos(matriz, num_obstaculos):
-    """Genera obstáculos de 2x2 en posiciones aleatorias."""
+    
     n = len(matriz)
     for _ in range(num_obstaculos):
         while True:
@@ -68,7 +72,7 @@ def generar_obstaculos(matriz, num_obstaculos):
                 break
 
 def colocar_manzana(matriz):
-    #Coloca una manzana en una posición aleatoria.
+    
     n = len(matriz)
     while True:
         fila = random.randint(0, n - 1)
@@ -79,7 +83,7 @@ def colocar_manzana(matriz):
             break
 
 def inicializar_serpiente(matriz, n):
-    #Inicializa la serpiente en el centro de la matriz.
+    
     centro_fila, centro_columna = centro(n)
     snake = [(centro_fila, centro_columna + 2), (centro_fila, centro_columna + 1), (centro_fila, centro_columna)]
     for fila, columna in snake:
@@ -88,7 +92,7 @@ def inicializar_serpiente(matriz, n):
     return snake
 
 def mover_serpiente(matriz, snake, direccion):
-    #Mueve la serpiente en la dirección especificada.
+    
     head_fila, head_columna = snake[0]
     new_head = None
 
@@ -110,13 +114,13 @@ def mover_serpiente(matriz, snake, direccion):
     return matriz, snake
 
 def obtener_direccion():
-    #Obtiene la dirección de movimiento del usuario.
+    
     direccion = input('\nIngrese el movimiento que desea indicarle a la serpiente (w, a, s, d)' 
                            '\nW es arriba, A es izquierda, S es abajo D es derecha... ')
     return direccion
 
 def mostrar_matriz(matriz):
-    #Muestra la matriz en la consola.
+    
     for fila in matriz:
         print(" ".join(fila))
 
