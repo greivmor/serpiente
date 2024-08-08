@@ -1,7 +1,8 @@
+
 import os
 import random
 
-def clear_terminal():
+def encontrar_terminal():
  
     if os.name == 'nt':
         os.system('cls')
@@ -40,7 +41,7 @@ def start_game():
 
     
     while True:
-        clear_terminal()
+        encontrar_terminal()
         mostrar_matriz(matriz)
         direccion = obtener_direccion()
         matriz, snake = mover_serpiente(matriz, snake, direccion)
@@ -105,12 +106,21 @@ def mover_serpiente(matriz, snake, direccion):
     elif direccion == 'd' and head_columna < len(matriz) - 1:
         new_head = (head_fila, head_columna + 1)
 
-    if new_head and matriz[new_head[0]][new_head[1]] == '.':
-        snake.insert(0, new_head)
-        tail = snake.pop()
-        matriz[head_fila][head_columna] = 'S'
-        matriz[new_head[0]][new_head[1]] = 'H'
-        matriz[tail[0]][tail[1]] = '.'
+    if new_head:
+        if matriz[new_head[0]][new_head[1]] == '.':
+            snake.insert(0, new_head)
+            tail = snake.pop()
+            matriz[head_fila][head_columna] = 'S'
+            matriz[new_head[0]][new_head[1]] = 'H'
+            matriz[tail[0]][tail[1]] = '.'
+        elif matriz[new_head[0]][new_head[1]] == 'A':
+            snake.insert(0, new_head)
+            matriz[head_fila][head_columna] = 'S'
+            matriz[new_head[0]][new_head[1]] = 'H'
+            colocar_manzana(matriz)
+        else:
+            print("\nLa serpiente chocó con un obstáculo o con su propio cuerpo. ¡Juego terminado!")
+            exit()
     return matriz, snake
 
 def obtener_direccion():
