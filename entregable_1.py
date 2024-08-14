@@ -2,7 +2,10 @@ import os
 import random
 import time
 import sys
-import select
+import msvcrt
+
+def hay_input_disponible():
+    return msvcrt.kbhit()
 
 def encontrar_terminal():
     if os.name == 'nt':
@@ -39,28 +42,26 @@ def start_game():
         snake = inicializar_serpiente(matriz, n)
 
         puntos = 0
-        direccion = obtener_direccion()
+        direccion = 'd'  # Dirección inicial predeterminada
 
         while True:
-            encontrar_terminal()
+            encontrar_terminal()  # Borrar la pantalla antes de mostrar la nueva matriz
             mostrar_matriz(matriz)
             print(f"Puntos: {puntos}")
-            
-            matriz, snake, puntos = mover_serpiente(matriz, snake, direccion, puntos)
-            time.sleep(0.5)  # Espera 0.5 segundos antes de mover la serpiente de nuevo
 
             if hay_input_disponible():
                 nueva_direccion = obtener_direccion()
                 if es_direccion_valida(direccion, nueva_direccion):
                     direccion = nueva_direccion
 
+            matriz, snake, puntos = mover_serpiente(matriz, snake, direccion, puntos)
+            
+            time.sleep(0.5)  # Espera 0.5 segundos antes de mover la serpiente de nuevo
+
             guardar_puntos(puntos)
     except Exception as e:
         print(f"\nOcurrió un error inesperado: {e}")
         print("El juego terminará ahora.")
-
-def hay_input_disponible():
-    return select.select([sys.stdin], [], [], 0) == ([sys.stdin], [], [])
 
 def es_direccion_valida(direccion_actual, nueva_direccion):
     # Verifica que la nueva dirección no sea opuesta a la dirección actual
@@ -108,6 +109,10 @@ def inicializar_serpiente(matriz, n):
     matriz[snake[0][0]][snake[0][1]] = 'H'
     return snake
 
+def mostrar_matriz(matriz):
+    for fila in matriz:
+        print(" ".join(fila))
+
 def mover_serpiente(matriz, snake, direccion, puntos):
     head_fila, head_columna = snake[0]
     new_head = None
@@ -149,7 +154,7 @@ def mover_serpiente(matriz, snake, direccion, puntos):
             print("\nLa serpiente chocó con un obstáculo. ¡Juego terminado!")
             print(f"Puntos totales: {puntos}")
             return matriz, snake, puntos  # Usar return en lugar de exit()
-        
+
         # Verifica si ha ganado el juego
         if verificar_victoria(matriz):
             print("\n¡Felicidades! Has ganado el juego.")
@@ -166,16 +171,10 @@ def verificar_victoria(matriz):
 
 def obtener_direccion():
     while True:
-        direccion = input('\nIngrese el movimiento que desea indicarle a la serpiente (w, a, s, d): '
-                            '\nW es arriba, A es izquierda, S es abajo, D es derecha... ')
-        if direccion in ['w', 'a', 's', 'd']:
-            return direccion
-        else:
-            print("Entrada inválida. Por favor, ingrese una dirección válida (w, a, s, d).")
-
-def mostrar_matriz(matriz):
-    for fila in matriz:
-        print(" ".join(fila))
+        if hay_input_disponible():
+            direccion = msvcrt.getch().decode('utf-8').lower()
+            if direccion in ['w', 'a', 's', 'd']:
+                return direccion
 
 def guardar_puntos(puntos):
     try:
@@ -185,3 +184,4 @@ def guardar_puntos(puntos):
         print("No se pudo guardar los puntos en el archivo.")
 
 start_game()
+
